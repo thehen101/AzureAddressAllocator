@@ -1,0 +1,5 @@
+# Ignore compiled classes
+/bin/
+
+# Ignore libraries
+/lib/
