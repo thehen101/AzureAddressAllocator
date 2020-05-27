@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import com.sun.net.httpserver.HttpExchange;
@@ -97,6 +98,25 @@ public class HTTPHandler {
 					this.sendResponse(exchange, 400 /* BAD REQUEST */,
 							new APIResponse("error", "Malformed JSON. Requires a String array."));
 				}
+			}
+		});
+		
+		this.httpServer.createContext("/allocate", (final HttpExchange exchange) -> {
+			final String post = this.getRequestData(exchange);
+			try {
+				final JsonObject allocationRequest = new Gson().fromJson(post, JsonObject.class);
+				final String user = this.allocator.getAPIManager()
+						.keyToUser(allocationRequest.get("key").getAsString());
+				
+				if (user == null) {
+					this.sendResponse(exchange, 403 /* FORBIDDEN */,
+							new APIResponse("error", "Invalid API key!"));
+				} else {
+					
+				}
+			} catch (final Exception e) {
+				this.sendResponse(exchange, 400 /* BAD REQUEST */,
+						new APIResponse("error", "Malformed request."));
 			}
 		});
 		

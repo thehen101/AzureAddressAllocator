@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import net.azurewebsites.thehen101.azureaddressallocator.api.APIManager;
 import net.azurewebsites.thehen101.azureaddressallocator.api.HTTPHandler;
+import net.azurewebsites.thehen101.azureaddressallocator.azure.AllocationManager;
+import net.azurewebsites.thehen101.azureaddressallocator.azure.AzureSettings;
 import net.azurewebsites.thehen101.azureaddressallocator.file.FileRegistry;
 
 /**
@@ -27,6 +29,7 @@ public class Allocator {
 	private final ExecutorService taskThread;
 	private final ExecutorService requestThreads;
 	
+	private final AllocationManager allocationManager;
 	private final APIManager apiManager;
 	private final AzureSettings azureSettings;
 	private final HTTPHandler httpHandler;
@@ -47,9 +50,11 @@ public class Allocator {
 			throw new ExceptionInInitializerError("No settings file found");
 		}
 		
+		this.allocationManager = new AllocationManager(this);
 		this.apiManager = new APIManager(this, FileRegistry.USERS);
 		this.httpHandler = new HTTPHandler(this, bindPort);
 		
+		LOGGER.info("!! Please make sure you have logged in to azure-cli using 'az login' !!");
 		LOGGER.info("Allocator successfully initialised. Listening for requests...");
 	}
 	
@@ -87,6 +92,10 @@ public class Allocator {
 	
 	public ExecutorService getRequestThreads() {
 		return this.requestThreads;
+	}
+	
+	public AllocationManager getAllocationManager() {
+		return this.allocationManager;
 	}
 	
 	public APIManager getAPIManager() {

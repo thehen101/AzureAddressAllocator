@@ -23,7 +23,7 @@ public class Main {
 		}
 		
 		//Set log4j level
-		Configurator.setAllLevels(LogManager.getRootLogger().getName(), Level.INFO);
+		Configurator.setAllLevels(LogManager.getRootLogger().getName(), Level.DEBUG);
 		
 		try {
 			final Allocator a = new Allocator(Integer.parseInt(args[0]));
